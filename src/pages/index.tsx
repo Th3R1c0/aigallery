@@ -11,9 +11,7 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import Image from "next/image";
-const Home: NextPage = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) => {
+const Home: NextPage = () => {
   const [currentImages, setCurrent] = useState([]);
   const gradient =
     "bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text  font-extrabold text-transparent";
