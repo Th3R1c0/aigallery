@@ -3,10 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { type InferGetServerSidePropsType } from "next";
 import { api } from "~/utils/api";
-import { db, ranktable } from "./db/drizzleDB";
 import { type Art, type NewArt } from "./db/drizzleDB";
 import { useEffect, useRef, useState } from "react";
-import { TotalArt } from "./db/TotalArt";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
@@ -123,7 +121,7 @@ export async function getServerSideProps() {
     ctx: {},
     transformer: superjson, // optional - adds superjson serialization
   });
-  const art = await db.select().from(ranktable);
+
   await helpers.images.getImagePair.prefetch({ number: 4 });
   return {
     props: {
