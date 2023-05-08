@@ -1,6 +1,6 @@
 import { desc, eq, ne, and } from "drizzle-orm";
 import { z } from "zod";
-import { db, ranktable } from "db/drizzleDB";
+import { Art, db, ranktable } from "db/drizzleDB";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -18,11 +18,12 @@ export const imageRouter = createTRPCRouter({
         // Find the picked image and increment its rank
         const pickedimg = await db.select().from(ranktable).where(eq(ranktable.image, pickedImage ))
        
-        const otherimg = await db.select().from(ranktable).where(eq(ranktable.image, otherImage))
+        const otherimg = await db.select().from(ranktable).where(eq(ranktable.image, otherImage)) as Art[]
        
-        
-        const updateArt1 = await db.update(ranktable).set({rank: otherimg[0]?.rank - 1}).where(eq(ranktable.image, input.otherImage));
-        const updateArt2 = await db.update(ranktable).set({rank: pickedimg[0]?.rank + 1, totalvoates: pickedimg[0]?.totalvoates + 1}).where(eq(ranktable.image, input.pickedImage));
+        const a = otherimg[0] as Art
+        const b = pickedimg[0] as Art;
+        const updateArt1 = await db.update(ranktable).set({rank: a.rank - 1}).where(eq(ranktable.image, input.otherImage));
+        const updateArt2 = await db.update(ranktable).set({rank: b.rank + 1, totalvoates:b.totalvoates + 1}).where(eq(ranktable.image, input.pickedImage));
           
 
     }),

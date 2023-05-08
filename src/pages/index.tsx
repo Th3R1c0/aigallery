@@ -1,32 +1,30 @@
-import { type NextPage } from "next";
+import type { NextPage, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { type InferGetServerSidePropsType } from "next";
 import { api } from "~/utils/api";
-import { type Art, type NewArt } from "../../db/drizzleDB";
+import type { Art, NewArt } from "../../db/drizzleDB";
 import { useEffect, useRef, useState } from "react";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import Image from "next/image";
+
 const Home: NextPage = () => {
-  const [currentImages, setCurrent] = useState([]);
-  const gradient =
-    "bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text  font-extrabold text-transparent";
-  const [refetchNum, setRefetchNum] = useState(6);
-  const [index, setIndex] = useState(0);
-  const [fadeIn, fadeOut] = useState(true);
-  const reff = useRef(null);
+  const [currentImages, setCurrent] = useState<Art[]>([]);
+  const [refetchNum] = useState<number>(6);
+  const [index, setIndex] = useState<number>(0);
+  const [fadeIn, fadeOut] = useState<boolean>(true);
+  const reff = useRef<HTMLDivElement>(null);
   const submit = api.images.SubmitImageRank.useMutation();
-  const [title, setTitle] = useState("most expensive");
+  const [title, setTitle] = useState<string>("most expensive");
   const { data, isLoading, refetch } = api.images.getImagePair.useQuery(
     {
       number: refetchNum,
     },
     {
-      onSuccess(data) {
+      onSuccess: (data: Art[]) => {
         if (index + 4 > currentImages.length) {
-          setCurrent((curr) => [...curr, ...data]);
+          setCurrent((curr: Art[]) => [...curr, ...data]);
         }
       },
     }
@@ -34,27 +32,26 @@ const Home: NextPage = () => {
 
   const toggleAnimation = () => {
     fadeOut(false);
-    console.log(reff);
+    console.log(reff.current);
   };
 
-  const handleClick = async (img) => {
-    submit.mutate({
-      pickedImage: img.image,
-      otherImage: currentImages[index + 1].image,
-    });
-    setTitle(
-      ["most expensive", "most dangerous", "most stylish"][
-        Math.floor(Math.random() * 3)
-      ]
-    );
+  const handleClick = async (img: Art): Promise<void> => {
+    const otherImage = currentImages[index + 1]?.image;
+    if (otherImage) {
+      submit.mutate({
+        pickedImage: img.image,
+        otherImage,
+      });
+    }
+    const randomtitle = ["most expensive", "most dangerous", "most stylish"][
+      Math.floor(Math.random() * 3)
+    ] as string;
+    setTitle(randomtitle);
     toggleAnimation();
     setIndex(index + 2);
-    await refetch().then((newData) => {
-      console.log(currentImages);
-    });
-    console.log(index);
-  };
 
+    const res = await refetch();
+  };
   return (
     <>
       <Head>
@@ -86,13 +83,11 @@ const Home: NextPage = () => {
                   className={`${
                     fadeIn ? "opacity-100" : "opacity-0"
                   } transition-opacity duration-500`}
-                  onClick={() => {
-                    handleClick(img);
-                  }}
+                  onClick={() => void handleClick(img as Art)}
                 >
                   <Image
                     onLoadingComplete={() => fadeOut(true)}
-                    src={img?.image}
+                    src={img?.image as string}
                     height={200}
                     quality={100}
                     width={200}

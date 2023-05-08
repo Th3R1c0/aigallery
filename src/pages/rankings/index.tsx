@@ -3,10 +3,18 @@ import Head from "next/head";
 import Link from "next/link";
 import { type InferGetServerSidePropsType } from "next";
 import { api } from "~/utils/api";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import { useEffect, useRef } from "react";
+import { AppRouter } from "~/server/api/root";
+type ImageData = {
+  rank: number;
+  image: string;
+  totalvoates: number;
+};
 
-const RankingTable = ({ data }) => {
+type getImageOutput = inferRouterOutputs<AppRouter["images"]>;
+const RankingTable = ({ data }: { data: ImageData[] }) => {
   return (
     <div className="flex w-screen space-x-4">
       {["Most expensive", "Most dangerous", "Most stylish"].map((i) => {
@@ -36,7 +44,7 @@ const RankingTable = ({ data }) => {
                           alt="image"
                         />
                       </td>
-                      <td>{img.totalVotes}</td>
+                      <td>{img.totalvoates}</td>
                     </tr>
                   );
                 })}
@@ -50,7 +58,7 @@ const RankingTable = ({ data }) => {
 };
 
 const Rankings: NextPage = () => {
-  const { data, loading } = api.images.getImages.useQuery();
+  const { data } = api.images.getImages.useQuery();
   const gradient =
     "bg-gradient-to-r from-purple-400 text-8xl to-pink-600 bg-clip-text  font-extrabold text-transparent";
   console.log(data);
