@@ -17,7 +17,7 @@ export const ranktable = pgTable('ranktable', {
 
 
 const pool = new Pool({
-  connectionString: process.env.DB_CONNECTION,
+  connectionString: 'postgresql://postgres:KXOsddZYcm38HKiZfliT@containers-us-west-117.railway.app:6248/railway',
 });
 export type Art = InferModel<typeof ranktable>;
 export type NewArt = InferModel<typeof ranktable, 'insert'>; // insert type // return type when queried

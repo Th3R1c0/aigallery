@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { type InferGetServerSidePropsType } from "next";
 import { api } from "~/utils/api";
-import { type Art, type NewArt } from "./db/drizzleDB";
+import { type Art, type NewArt } from "../../db/drizzleDB";
 import { useEffect, useRef, useState } from "react";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { appRouter } from "~/server/api/root";
