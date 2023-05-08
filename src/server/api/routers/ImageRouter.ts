@@ -1,6 +1,6 @@
 import { desc, eq, ne, and } from "drizzle-orm";
 import { z } from "zod";
-import { Art, db, ranktable } from "db/drizzleDB";
+import { Art, db, ranktable } from "~/db/drizzleDB";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
